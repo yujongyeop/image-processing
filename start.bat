@@ -1,0 +1,1 @@
+call %cd%\venv\Scripts\Activate.bat
