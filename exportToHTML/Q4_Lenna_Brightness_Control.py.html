@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Q4_Lenna_Brightness_Control.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Q4_Lenna_Brightness_Control.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+<span class="s0">import </span><span class="s1">cv2</span>
+
+<span class="s1">img = cv2.imread(</span><span class="s2">&quot;images/Lenna_dark.png&quot;</span><span class="s0">, </span><span class="s1">cv2.IMREAD_COLOR)</span>
+<span class="s1">origin = cv2.imread(</span><span class="s2">&quot;images/Lenna_dark.png&quot;</span><span class="s0">, </span><span class="s1">cv2.IMREAD_COLOR)</span>
+
+<span class="s3">#hsv 후  ycrcb가 더 선명함</span>
+<span class="s1">img_hsv = cv2.cvtColor(img</span><span class="s0">, </span><span class="s1">cv2.COLOR_BGR2HSV)</span>
+<span class="s1">(h</span><span class="s0">,</span><span class="s1">s</span><span class="s0">,</span><span class="s1">v) = cv2.split(img_hsv)</span>
+<span class="s1">v = cv2.add(v</span><span class="s0">,</span><span class="s4">90</span><span class="s1">)</span>
+<span class="s1">img_hsv = cv2.merge([h</span><span class="s0">,</span><span class="s1">s</span><span class="s0">,</span><span class="s1">v])</span>
+<span class="s1">img = cv2.cvtColor(img_hsv</span><span class="s0">, </span><span class="s1">cv2.COLOR_HSV2BGR)</span>
+<span class="s1">img_bgr = cv2.cvtColor(img</span><span class="s0">, </span><span class="s1">cv2.COLOR_BGR2YCrCb)</span>
+<span class="s1">(y</span><span class="s0">,</span><span class="s1">cr</span><span class="s0">,</span><span class="s1">cb) = cv2.split(img_bgr)</span>
+<span class="s1">y = cv2.equalizeHist(y)</span>
+<span class="s1">img_bgr = cv2.merge([y</span><span class="s0">,</span><span class="s1">cr</span><span class="s0">,</span><span class="s1">cb])</span>
+<span class="s1">img = cv2.cvtColor(img_bgr</span><span class="s0">, </span><span class="s1">cv2.COLOR_YCrCb2BGR)</span>
+<span class="s1">cv2.imshow(</span><span class="s2">'Origin'</span><span class="s0">, </span><span class="s1">origin)</span>
+<span class="s1">cv2.imshow(</span><span class="s2">'Brightness increase'</span><span class="s0">, </span><span class="s1">img)</span>
+<span class="s1">cv2.waitKey(</span><span class="s4">0</span><span class="s1">)</span>
+<span class="s1">cv2.destroyAllWindows()</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Q3_Half_And_Half.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Q3_Half_And_Half.py</font>
+</center></td></tr></table>
+<pre><span class="s0">from </span><span class="s1">turtle </span><span class="s0">import </span><span class="s1">width</span>
+<span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+<span class="s0">import </span><span class="s1">cv2</span>
+
+<span class="s1">pizza1 = cv2.imread(</span><span class="s2">&quot;images/pizza1.png&quot;</span><span class="s0">, </span><span class="s1">cv2.IMREAD_COLOR)</span>
+<span class="s1">pizza2 = cv2.imread(</span><span class="s2">&quot;images/pizza2.png&quot;</span><span class="s0">, </span><span class="s1">cv2.IMREAD_COLOR)</span>
+<span class="s1">halfAndHalf = np.zeros((pizza1.shape)</span><span class="s0">, </span><span class="s1">np.uint8)</span>
+
+<span class="s1">(row</span><span class="s0">, </span><span class="s1">col) = pizza1.shape[:</span><span class="s3">2</span><span class="s1">]</span>
+<span class="s1">width = col // </span><span class="s3">2 </span><span class="s1">+ </span><span class="s3">1</span>
+<span class="s1">roi1 = pizza1[:</span><span class="s0">,</span><span class="s1">:width]</span>
+<span class="s1">roi2 = pizza2[:</span><span class="s0">,</span><span class="s1">width:]</span>
+<span class="s1">halfAndHalf[:</span><span class="s0">,</span><span class="s1">:width] = roi1</span>
+<span class="s1">halfAndHalf[:</span><span class="s0">,</span><span class="s1">width:] = roi2</span>
+<span class="s1">cv2.imshow(</span><span class="s2">'pizza1'</span><span class="s0">, </span><span class="s1">pizza1)</span>
+<span class="s1">cv2.imshow(</span><span class="s2">'pizza2'</span><span class="s0">, </span><span class="s1">pizza2)</span>
+<span class="s1">cv2.imshow(</span><span class="s2">'half and half'</span><span class="s0">, </span><span class="s1">halfAndHalf)</span>
+<span class="s1">cv2.waitKey(</span><span class="s3">0</span><span class="s1">)</span>
+</pre>
+</body>
+</html>

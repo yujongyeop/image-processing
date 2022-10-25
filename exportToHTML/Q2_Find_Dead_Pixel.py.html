@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>Q2_Find_Dead_Pixel.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Q2_Find_Dead_Pixel.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+<span class="s0">import </span><span class="s1">cv2</span>
+
+<span class="s1">red</span><span class="s0">, </span><span class="s1">green = (</span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s0">, </span><span class="s2">128</span><span class="s1">)</span><span class="s0">, </span><span class="s1">(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">128</span><span class="s0">, </span><span class="s2">0</span><span class="s1">)</span>
+
+
+<span class="s0">def </span><span class="s1">OpenImg(num):</span>
+    <span class="s1">img_name = </span><span class="s3">&quot;images/DeadPixel&quot; </span><span class="s1">+ str(num) + </span><span class="s3">&quot;.bmp&quot;</span>
+    <span class="s1">img = cv2.imread(img_name</span><span class="s0">, </span><span class="s1">cv2.IMREAD_COLOR)</span>
+    <span class="s1">img = np.float32(img)</span>
+    <span class="s0">if </span><span class="s1">img </span><span class="s0">is None</span><span class="s1">:</span>
+        <span class="s0">raise </span><span class="s1">Exception(</span><span class="s3">&quot;파일 영상 처리 에러&quot;</span><span class="s1">)</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s1">FindDeadPixel(img</span><span class="s0">, </span><span class="s1">num)</span>
+
+
+<span class="s0">def </span><span class="s1">FindDeadPixel(img</span><span class="s0">, </span><span class="s1">num):</span>
+    <span class="s1">totalDeadPixel = </span><span class="s2">0</span>
+    <span class="s1">center_status = </span><span class="s0">True</span>
+    <span class="s1">(b</span><span class="s0">, </span><span class="s1">g</span><span class="s0">, </span><span class="s1">r) = cv2.split(img)</span>
+    <span class="s1">b[:</span><span class="s0">, </span><span class="s1">:] = </span><span class="s2">0</span>
+    <span class="s1">g[:</span><span class="s0">, </span><span class="s1">:] = </span><span class="s2">0</span>
+    <span class="s1">mask = cv2.threshold(r</span><span class="s0">, </span><span class="s2">0</span><span class="s0">, </span><span class="s2">255</span><span class="s0">, </span><span class="s1">cv2.THRESH_BINARY)[</span><span class="s2">1</span><span class="s1">]</span>
+    <span class="s1">(row</span><span class="s0">, </span><span class="s1">col) = mask.shape</span>
+    <span class="s1">width = col // </span><span class="s2">3 </span><span class="s1">+ </span><span class="s2">1</span>
+    <span class="s1">height = row // </span><span class="s2">3 </span><span class="s1">+ </span><span class="s2">1</span>
+    <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(</span><span class="s2">3</span><span class="s1">):</span>
+        <span class="s0">for </span><span class="s1">j </span><span class="s0">in </span><span class="s1">range(</span><span class="s2">3</span><span class="s1">):</span>
+            <span class="s1">deadPixel = </span><span class="s2">0</span>
+            <span class="s1">w = width * i</span>
+            <span class="s1">h = height * j</span>
+            <span class="s1">roi = mask[h:h+height</span><span class="s0">, </span><span class="s1">w:w+width]</span>
+            <span class="s1">roiDeadPixel = cv2.reduce(roi</span><span class="s0">, </span><span class="s1">dim=</span><span class="s2">0</span><span class="s0">, </span><span class="s1">rtype=cv2.REDUCE_SUM)</span>
+            <span class="s1">deadPixel = int(roiDeadPixel.sum() / </span><span class="s2">255</span><span class="s1">)</span>
+            <span class="s0">if </span><span class="s1">i == </span><span class="s2">1 </span><span class="s0">and </span><span class="s1">j == </span><span class="s2">1</span><span class="s1">:</span>
+                <span class="s0">if </span><span class="s1">deadPixel &gt; </span><span class="s2">1</span><span class="s1">:</span>
+                    <span class="s1">center_status = </span><span class="s0">False</span>
+            <span class="s1">totalDeadPixel += deadPixel</span>
+    <span class="s1">mask = cv2.merge((b</span><span class="s0">, </span><span class="s1">g</span><span class="s0">, </span><span class="s1">mask))</span>
+    <span class="s0">if </span><span class="s1">totalDeadPixel &lt; </span><span class="s2">10 </span><span class="s0">and </span><span class="s1">center_status:</span>
+        <span class="s1">ShowImg(mask</span><span class="s0">, </span><span class="s3">'GOOD'</span><span class="s0">, </span><span class="s1">num)</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s1">ShowImg(mask</span><span class="s0">, </span><span class="s3">'NG'</span><span class="s0">, </span><span class="s1">num)</span>
+
+
+<span class="s0">def </span><span class="s1">ShowImg(mask</span><span class="s0">, </span><span class="s1">status</span><span class="s0">, </span><span class="s1">num):</span>
+    <span class="s1">title = </span><span class="s3">'DeadPixel' </span><span class="s1">+ str(num) + </span><span class="s3">'.bmp'</span>
+    <span class="s0">if </span><span class="s1">status == </span><span class="s3">'NG'</span><span class="s1">:</span>
+        <span class="s1">cv2.putText(mask</span><span class="s0">, </span><span class="s1">status</span><span class="s0">, </span><span class="s1">(</span><span class="s2">2440</span><span class="s0">, </span><span class="s2">50</span><span class="s1">)</span><span class="s0">, </span><span class="s1">cv2.FONT_HERSHEY_SIMPLEX</span><span class="s0">, </span><span class="s2">2</span><span class="s0">, </span><span class="s1">red)</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s1">cv2.putText(mask</span><span class="s0">, </span><span class="s1">status</span><span class="s0">, </span><span class="s1">(</span><span class="s2">2350</span><span class="s0">, </span><span class="s2">50</span><span class="s1">)</span><span class="s0">,</span>
+                    <span class="s1">cv2.FONT_HERSHEY_SIMPLEX</span><span class="s0">, </span><span class="s2">2</span><span class="s0">, </span><span class="s1">green)</span>
+    <span class="s1">cv2.imshow(title</span><span class="s0">, </span><span class="s1">mask)</span>
+
+
+<span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(</span><span class="s2">3</span><span class="s1">):</span>
+    <span class="s1">OpenImg(i+</span><span class="s2">1</span><span class="s1">)</span>
+
+<span class="s1">cv2.waitKey(</span><span class="s2">0</span><span class="s1">)</span>
+</pre>
+</body>
+</html>

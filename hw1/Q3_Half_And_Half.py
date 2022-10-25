@@ -1,4 +1,3 @@
-from turtle import width
 import numpy as np
 import cv2
 
