@@ -15,7 +15,7 @@ def Bluring():
 
 ## 샤프닝 처리
 def Sharpening():
-    roi = img[:h+1, w:]
+    roi = img[:h+1, w-1:]
     sharpening_mask = [0, -1, 0,
                        -1, 5, -1,
                        0, -1, 0]
@@ -26,7 +26,7 @@ def Sharpening():
 
 ## 소벨 처리(엣지 검출)
 def Sobel():
-    roi = img[h:, :w+1]
+    roi = img[h-1:, :w+1]
     sobel_row = [-1, -2, -1,
                  0, 0, 0,
                  1, 2, 1]
@@ -44,7 +44,7 @@ def Sobel():
 
 ## 라플라시안 처리(엣지 검출)
 def Laplacian():
-    roi = img[h:, w:]
+    roi = img[h-1:, w-1:]
     dst = cv2.Laplacian(roi, cv2.CV_16S, 1)
     dst = cv2.convertScaleAbs(dst)
     return dst
@@ -60,10 +60,13 @@ w = col // 2 + 1
 print(row, col)
 result = np.zeros((row, col), np.uint8)
 result[:h+1, :w+1] = Bluring()
-result[:h+1, w:] = Sharpening()
-result[h:, :w+1] = Sobel()
-result[h:, w:] = Laplacian()
+result[:h+1, w-1:] = Sharpening()
+result[h-1:, :w+1] = Sobel()
+result[h-1:, w-1:] = Laplacian()
 cv2.imshow('Original', img)
+test = np.zeros((7), np.uint8)
+test[4:] = 1    
+print(test)
 # cv2.imshow('Result - Blur', blur_Result)
 # cv2.imshow('Result - Sharpening', sharpening_Result)
 # cv2.imshow('Result - Sobel', sobel_Result)
